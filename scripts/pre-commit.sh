@@ -19,6 +19,7 @@ run typecheck npm run --silent typecheck
 run boundaries npm run --silent lint:boundaries
 run oxlint npm run --silent lint:oxlint
 run exemptions npm run --silent lint:exemptions
+run modules npm run --silent lint:modules
 wait
 
 status=0
