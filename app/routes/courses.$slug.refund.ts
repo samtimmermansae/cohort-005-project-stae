@@ -9,10 +9,10 @@ import {
   lessons,
   modules,
   purchases,
-  refunds,
+  refundRequests,
   users,
   videoWatchEvents,
-  RefundStatus,
+  RefundRequestStatus,
 } from "~/db/schema";
 import { and, eq, inArray, isNotNull, sql } from "drizzle-orm";
 import { parseFormData, parseParams } from "~/lib/validation";
@@ -61,11 +61,11 @@ function getLessonIdsForCourse(courseId: number): number[] {
 function getPendingRefundRequest(purchaseId: number) {
   return db
     .select()
-    .from(refunds)
+    .from(refundRequests)
     .where(
       and(
-        eq(refunds.purchaseId, purchaseId),
-        eq(refunds.status, RefundStatus.Pending)
+        eq(refundRequests.purchaseId, purchaseId),
+        eq(refundRequests.status, RefundRequestStatus.Pending)
       )
     )
     .get();
@@ -215,10 +215,10 @@ export async function action({ params, request }: Route.ActionArgs) {
     return data({ errors: parsed.errors }, { status: 400 });
   }
 
-  db.insert(refunds)
+  db.insert(refundRequests)
     .values({
       purchaseId: purchase.id,
-      status: RefundStatus.Pending,
+      status: RefundRequestStatus.Pending,
       reason: parsed.data.reason,
     })
     .returning()

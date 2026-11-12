@@ -27,7 +27,7 @@ _Avoid_: Cancellation, cancel my purchase, Reversal, Chargeback
 
 **Pending**:
 The state of a Refund Request that no one has decided on yet.
-_Avoid_: Requested, Open
+_Avoid_: Requested (as the name of the state), Open
 
 **Approved**:
 The outcome of a Refund Request that is granted, leading to a Refund.
