@@ -2003,6 +2003,42 @@ This course is still in draft while the cluster examples are rewritten against t
     `Created ${countRows(schema.comments)} lesson comments across ${countRows(schema.comments, isNull(schema.comments.parentId))} threads.`
   );
 
+  // ─── Bookmarks and Notes ───
+  // Private to each Student: only the author sees them, on the Lesson page and
+  // at /saved. Students 0 and 1 have some of each so /saved isn't empty; one
+  // Note has been edited since it was written.
+
+  db.insert(schema.bookmarks)
+    .values([
+      { userId: students[0].id, lessonId: course1LessonIds[2], createdAt: daysAgo(6) },
+      { userId: students[0].id, lessonId: course1LessonIds[4], createdAt: daysAgo(2) },
+      { userId: students[1].id, lessonId: course2LessonIds[1], createdAt: daysAgo(4) },
+    ])
+    .run();
+
+  db.insert(schema.notes)
+    .values([
+      {
+        userId: students[0].id,
+        lessonId: course1LessonIds[2],
+        body: "Install typescript locally first, then npx tsc.\n# not a heading, just a note to self",
+        createdAt: daysAgo(6),
+        updatedAt: daysAgo(1),
+      },
+      {
+        userId: students[1].id,
+        lessonId: course2LessonIds[1],
+        body: "Rewatch the bit on 4xx vs 5xx.",
+        createdAt: daysAgo(4),
+        updatedAt: daysAgo(4),
+      },
+    ])
+    .run();
+
+  console.log(
+    `Created ${countRows(schema.bookmarks)} bookmarks and ${countRows(schema.notes)} notes.`
+  );
+
   // ─── Lesson Progress ───
 
   // Helper to mark lessons as complete
@@ -2849,6 +2885,9 @@ This course is still in draft while the cluster examples are rewritten against t
   console.log(`  Enrollments: ${countRows(schema.enrollments)}`);
   console.log(`  Course ratings: ${countRows(schema.courseRatings)}`);
   console.log(`  Lesson comments: ${countRows(schema.comments)}`);
+  console.log(
+    `  Bookmarks: ${countRows(schema.bookmarks)}, notes: ${countRows(schema.notes)}`
+  );
   console.log(
     `  Lesson progress: ${countRows(schema.lessonProgress)} (${countRows(schema.lessonProgress, eq(schema.lessonProgress.status, LessonProgressStatus.Completed))} completed)`
   );
