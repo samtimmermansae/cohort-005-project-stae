@@ -9,7 +9,8 @@ export function useAutoplay() {
     try {
       setEnabled(localStorage.getItem(AUTOPLAY_KEY) === "true");
     } catch {
-      /* silently fail */
+      // Storage can be blocked (private mode, disabled cookies); autoplay
+      // then just stays off.
     }
   }, []);
 
@@ -19,7 +20,7 @@ export function useAutoplay() {
       try {
         localStorage.setItem(AUTOPLAY_KEY, String(next));
       } catch {
-        /* silently fail */
+        // The toggle still works for this visit when storage is blocked.
       }
       return next;
     });
