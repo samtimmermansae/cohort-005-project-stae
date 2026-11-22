@@ -1,4 +1,4 @@
-import { count, desc, eq } from "drizzle-orm";
+import { count, desc, eq, inArray } from "drizzle-orm";
 import type { BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
 import * as schema from "~/db/schema";
 import {
@@ -54,39 +54,59 @@ function getFeaturedCourses(db: Db) {
     .all();
 }
 
-function getLessonCountsByCourse(db: Db) {
+function getLessonCounts(db: Db, courseIds: number[]) {
   const rows = db
     .select({ courseId: modules.courseId, lessonCount: count(lessons.id) })
     .from(lessons)
     .innerJoin(modules, eq(lessons.moduleId, modules.id))
-    .innerJoin(courses, eq(modules.courseId, courses.id))
-    .where(isPublished)
+    .where(inArray(modules.courseId, courseIds))
     .groupBy(modules.courseId)
     .all();
   return new Map(rows.map((row) => [row.courseId, row.lessonCount]));
 }
 
-function countRows(rows: { n: number }[]) {
+/** The single figure an aggregate `count()` query returns. */
+function onlyCount(rows: { n: number }[]) {
   const [{ n }] = rows;
   return n;
 }
 
+function countPublishedLessons(db: Db) {
+  return onlyCount(
+    db
+      .select({ n: count() })
+      .from(lessons)
+      .innerJoin(modules, eq(lessons.moduleId, modules.id))
+      .innerJoin(courses, eq(modules.courseId, courses.id))
+      .where(isPublished)
+      .all()
+  );
+}
+
+function countPublishedCourses(db: Db) {
+  return onlyCount(
+    db.select({ n: count() }).from(courses).where(isPublished).all()
+  );
+}
+
+function countCategories(db: Db) {
+  return onlyCount(db.select({ n: count() }).from(categories).all());
+}
+
 export function getLandingPage(db: Db): LandingPage {
-  const lessonCounts = getLessonCountsByCourse(db);
-  const featuredCourses = getFeaturedCourses(db).map((course) => ({
-    ...course,
-    lessonCount: lessonCounts.get(course.id) ?? 0,
-  }));
-  const totalLessons = [...lessonCounts.values()].reduce((a, b) => a + b, 0);
+  const featured = getFeaturedCourses(db);
+  const lessonCounts = getLessonCounts(
+    db,
+    featured.map((course) => course.id)
+  );
 
   return {
-    featuredCourses,
-    totalCourses: countRows(
-      db.select({ n: count() }).from(courses).where(isPublished).all()
-    ),
-    totalCategories: countRows(
-      db.select({ n: count() }).from(categories).all()
-    ),
-    totalLessons,
+    featuredCourses: featured.map((course) => ({
+      ...course,
+      lessonCount: lessonCounts.get(course.id) ?? 0,
+    })),
+    totalCourses: countPublishedCourses(db),
+    totalCategories: countCategories(db),
+    totalLessons: countPublishedLessons(db),
   };
 }
