@@ -46,6 +46,14 @@ change to how the module stores its data leaves its tests alone.
 
 Keep every file under 5000 tokens.
 
+## A form judges input the way its action does
+
+When a form checks input before submitting (a length limit, a blank check, an
+unsaved-changes flag), it normalises the input exactly as the action does:
+the same trim, the same limit. Share one schema or normaliser between the two.
+A form that judges different text from the action shows wrong states, such as
+"unsaved" straight after a save.
+
 ## Wrap related writes in a transaction
 
 Two writes that must both land, or neither, go in a transaction. If the second

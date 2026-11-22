@@ -14,6 +14,10 @@ pushes your commits. Leave `.github/` untouched.
 Every finding you leave unfixed becomes an inline comment on its file and
 line. You will be asked for them as structured output.
 
+Code the PR moved without changing is pre-existing. List its findings under
+one "Moved unchanged" line in the verdict, with no inline comments, and judge
+the PR on what it changed.
+
 Write your verdict on the branch, after your fixes, to /tmp/review-verdict.md:
 
     ## Standards: PASS | CHANGES REQUESTED

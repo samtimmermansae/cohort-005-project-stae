@@ -13,8 +13,11 @@ Read CODING_STANDARDS.md.
 - `npm run build` must pass too.
 - Commit with `git commit` on the current branch. When the pre-commit hook
   rejects a commit, fix the work and commit again. The hook stays as it is:
-  no `--no-verify`, no edits to `.husky/`, `scripts/pre-commit.sh` or
-  `core.hooksPath`.
+  no `--no-verify`, no edits to `.husky/`, `scripts/pre-commit.sh`,
+  `scripts/check-*` or `core.hooksPath`.
+- When the hook makes you split a file that is over the token limit, commit
+  the split alone first: code moved, behaviour unchanged. Then commit the
+  ticket's change on top.
 - Finish with at least one commit and a clean working tree. The workflow
   pushes and opens the pull request.
 - Leave `.github/` untouched.
