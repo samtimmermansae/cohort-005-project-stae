@@ -2,9 +2,15 @@ import type { Db } from "~/lib/notes.server";
 import { loadLessonPage, type FoundCourseDecisions } from "./lib/load.server";
 import { markLessonComplete } from "./lib/progress.server";
 import { getCommentById } from "./lib/thread.server";
-import { computeResult } from "./lib/quiz.server";
-import { quizzes } from "~/db/schema";
-import { eq } from "drizzle-orm";
+import { computeResult, isQuizInLesson } from "./lib/quiz.server";
+
+/** A Student's answers to one lesson's quiz, keyed by question id. */
+export type QuizSubmission = {
+  userId: number;
+  lessonId: number;
+  quizId: number;
+  answers: Record<number, number>;
+};
 
 /**
  * The data behind the Student's lesson page: the lesson, its course outline,
@@ -38,19 +44,9 @@ export function createLessonPage(db: Db) {
      * Scores and records an attempt at the lesson's quiz. "not-found" when
      * the quiz belongs to another lesson; null when scoring failed.
      */
-    submitQuiz(
-      userId: number,
-      lessonId: number,
-      quizId: number,
-      selectedAnswers: Record<number, number>
-    ) {
-      const quiz = db
-        .select()
-        .from(quizzes)
-        .where(eq(quizzes.id, quizId))
-        .get();
-      if (!quiz || quiz.lessonId !== lessonId) return "not-found" as const;
-      return computeResult(db, userId, quizId, selectedAnswers);
+    submitQuiz({ userId, lessonId, quizId, answers }: QuizSubmission) {
+      if (!isQuizInLesson(db, quizId, lessonId)) return "not-found" as const;
+      return computeResult(db, userId, quizId, answers);
     },
   };
 }

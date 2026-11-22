@@ -139,8 +139,13 @@ describe("the lesson's quiz", () => {
     const [one] = course.lessonIds;
     const quiz = addQuiz(course.db, one);
 
-    const result = course.page.submitQuiz(course.student.id, one, quiz.quizId, {
-      [quiz.questionId]: quiz.rightId,
+    const result = course.page.submitQuiz({
+      userId: course.student.id,
+      lessonId: one,
+      quizId: quiz.quizId,
+      answers: {
+        [quiz.questionId]: quiz.rightId,
+      },
     });
 
     expect(result).toMatchObject({ passed: true, grade: "A", totalCorrect: 1 });
@@ -155,8 +160,13 @@ describe("the lesson's quiz", () => {
     const [one] = course.lessonIds;
     const quiz = addQuiz(course.db, one);
 
-    const result = course.page.submitQuiz(course.student.id, one, quiz.quizId, {
-      [quiz.questionId]: quiz.wrongId,
+    const result = course.page.submitQuiz({
+      userId: course.student.id,
+      lessonId: one,
+      quizId: quiz.quizId,
+      answers: {
+        [quiz.questionId]: quiz.wrongId,
+      },
     });
 
     expect(result).toMatchObject({
@@ -172,7 +182,12 @@ describe("the lesson's quiz", () => {
     const quiz = addQuiz(course.db, one);
 
     expect(
-      course.page.submitQuiz(course.student.id, two, quiz.quizId, {})
+      course.page.submitQuiz({
+        userId: course.student.id,
+        lessonId: two,
+        quizId: quiz.quizId,
+        answers: {},
+      })
     ).toBe("not-found");
   });
 });

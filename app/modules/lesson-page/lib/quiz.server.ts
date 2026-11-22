@@ -8,6 +8,11 @@ import {
   quizAnswers,
 } from "~/db/schema";
 
+export function isQuizInLesson(db: Db, quizId: number, lessonId: number) {
+  const quiz = db.select().from(quizzes).where(eq(quizzes.id, quizId)).get();
+  return quiz?.lessonId === lessonId;
+}
+
 export function getQuizByLessonId(db: Db, lessonId: number) {
   return db.select().from(quizzes).where(eq(quizzes.lessonId, lessonId)).get();
 }

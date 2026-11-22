@@ -248,12 +248,12 @@ export async function action({ params, request }: Route.ActionArgs) {
 
     // Scoped to this lesson, so a quiz elsewhere can't be reached by posting
     // its id to this route.
-    const result = lessonPage.submitQuiz(
-      currentUserId,
+    const result = lessonPage.submitQuiz({
+      userId: currentUserId,
       lessonId,
       quizId,
-      selectedAnswers
-    );
+      answers: selectedAnswers,
+    });
     if (result === "not-found") {
       throw data("Quiz not found", { status: 404 });
     }
