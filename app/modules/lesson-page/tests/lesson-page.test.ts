@@ -190,6 +190,20 @@ describe("the lesson's quiz", () => {
       })
     ).toBe("not-found");
   });
+
+  it("refuses a quiz that does not exist", () => {
+    const course = setUpCourse();
+    const [one] = course.lessonIds;
+
+    expect(
+      course.page.submitQuiz({
+        userId: course.student.id,
+        lessonId: one,
+        quizId: 999_999,
+        answers: {},
+      })
+    ).toBe("not-found");
+  });
 });
 
 describe("finding a comment", () => {
