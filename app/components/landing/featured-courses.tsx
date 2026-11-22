@@ -16,7 +16,7 @@ export function FeaturedCourses({ courses }: { courses: FeaturedCourse[] }) {
   return (
     <section className="border-t border-border">
       <div className="mx-auto max-w-6xl px-6 py-20">
-        <div className="mb-10 flex items-end justify-between">
+        <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
           <div>
             <h2 className="text-3xl font-bold tracking-tight">
               Featured Courses
