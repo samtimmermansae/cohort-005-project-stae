@@ -40,13 +40,18 @@ export function LandingFeatures() {
   );
 }
 
-const FOOTER_LINKS = [
-  { to: "/courses", label: "Courses" },
+const COURSES_LINK = { to: "/courses", label: "Courses" };
+const SIGNED_IN_LINKS = [
+  COURSES_LINK,
+  { to: "/dashboard", label: "Dashboard" },
+];
+const SIGNED_OUT_LINKS = [
+  COURSES_LINK,
   { to: "/login", label: "Log In" },
   { to: "/signup", label: "Sign Up" },
 ];
 
-export function LandingFooter() {
+export function LandingFooter({ signedIn }: { signedIn: boolean }) {
   return (
     <footer className="border-t border-border">
       <div className="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-10 sm:flex-row sm:items-start sm:justify-between">
@@ -59,7 +64,7 @@ export function LandingFooter() {
           </p>
         </div>
         <nav className="flex gap-6 text-sm">
-          {FOOTER_LINKS.map((link) => (
+          {(signedIn ? SIGNED_IN_LINKS : SIGNED_OUT_LINKS).map((link) => (
             <Link
               key={link.to}
               to={link.to}

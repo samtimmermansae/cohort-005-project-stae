@@ -146,7 +146,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 
       <FeaturedCourses courses={featuredCourses} />
 
-      <LandingFooter />
+      <LandingFooter signedIn={currentUser !== null} />
 
       <DevUI
         users={users}
