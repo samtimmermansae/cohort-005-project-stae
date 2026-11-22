@@ -97,7 +97,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           <nav className="flex items-center gap-3 whitespace-nowrap sm:gap-6">
             <Link
               to="/courses"
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              className="hidden text-sm font-medium text-muted-foreground transition-colors hover:text-foreground sm:inline"
             >
               Courses
             </Link>
