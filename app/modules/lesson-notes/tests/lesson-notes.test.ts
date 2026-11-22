@@ -62,4 +62,18 @@ describe("describeNoteDraft", () => {
       canSave: false,
     });
   });
+
+  it("treats a draft that only adds surrounding whitespace as saved", () => {
+    expect(describeNoteDraft("same\n", "same")).toMatchObject({
+      dirty: false,
+      canSave: false,
+    });
+  });
+
+  it("allows a note at the limit with trailing whitespace", () => {
+    expect(describeNoteDraft(`${"a".repeat(LIMIT)}\n`, null)).toMatchObject({
+      tooLong: false,
+      canSave: true,
+    });
+  });
 });
